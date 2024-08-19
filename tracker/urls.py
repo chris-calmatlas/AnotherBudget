@@ -22,7 +22,15 @@ from .views import *
 urlpatterns = [
     path('', app.transactions, name='index'),
 
-    path("login", auth.login_view, name="login"),
-    path("logout", auth.logout_view, name="logout"),
-    path("register", auth.register, name="register"),
+    path("accounts/login/", auth.login_view, name="login"),
+    path("accounts/logout/", auth.logout_view, name="logout"),
+    path("accounts/register/", auth.register, name="register"),
+
+    path("view/transactions/", transactions.listAll, name="listAllTransactions"),
+    path("view/accounts/", accounts.listAll, name="listAllAccounts"),
+
+    path("transactions/", transactions.api, {"transactionId":None}),
+    path("transactions/<str:transactionId>/", transactions.api),
+    path("accounts/", accounts.api, {"accountId":None}),
+    path("accounts/<str:accountId>/", accounts.api),
 ]

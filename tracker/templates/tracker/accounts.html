@@ -1,0 +1,22 @@
+{% extends "tracker/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h2>Add Account</h2>
+    <form class="accountForm">
+        {% csrf_token %}
+        {{ accountForm }}
+        <button>Add</button>
+    </form>
+
+    <h2>Accounts</h2>
+    <table class="accountTable">
+        {% for account in accounts %}
+        <tr>
+            <td>account.name</td>
+            <td>account.description</td>
+            <td>account.balance</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -9,7 +9,7 @@
     </head>
     <body>
         <h1>Budget</h1>
-        <ul class="nav">
+        <ul class="nav justify-content-end">
             {% if user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
@@ -26,7 +26,19 @@
                 </li>
             {% endif %}
         </ul>
-        {% block body %}
-        {% endblock %}
+        <div class="row">
+            <div class="sidebar col-md-2">
+                <ul>
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'listAllTransactions' %}">Transactions</a></li>
+                    <li><a href="{% url 'listAllAccounts' %}">Accounts</a></li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+            {% block body %}
+            {% endblock %}
+            </div>
+        </div>
+        <script src="{% static 'tracker/scripts.js' %}"></script>
     </body>
 </html>

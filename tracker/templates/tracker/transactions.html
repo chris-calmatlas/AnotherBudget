@@ -2,6 +2,21 @@
 {% load static %}
 
 {% block body %}
+    <h2>Add Transaction</h2>
+    <form class="transactionForm">
+        {% csrf_token %}
+        {{ transactionForm }}
+        <button>Add</button>
+    </form>
+
     <h2>Transactions</h2>
-    <p>Hi there.</p>
+    <table class="transactionTable">
+        {% for transaction in transactions %}
+        <tr>
+            <td>transaction.date</td>
+            <td>transaction.entity</td>
+            <td>transaction.amount</td>
+        </tr>
+        {% endfor %}
+    </table>
 {% endblock %}

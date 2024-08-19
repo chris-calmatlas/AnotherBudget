@@ -31,13 +31,14 @@ class Entity(models.Model):
         ]
 
 class Transaction(models.Model):
-    name = models.CharField(max_length=64)
-    owner = models.ForeignKey('User', null=True, on_delete=models.CASCADE)
-    entity = models.ForeignKey('Entity', null=True, on_delete=models.SET_NULL)
+    description = models.CharField(max_length=64)
     account = models.ForeignKey('Account', null=True, on_delete=models.RESTRICT)
+    entity = models.ForeignKey('Entity', null=True, on_delete=models.SET_NULL)
     amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     isIncome = models.BooleanField(default='False')
     date = models.DateField(default=date.today)
+
+    owner = models.ForeignKey('User', null=True, on_delete=models.CASCADE)
     modifiedOn = models.DateTimeField(auto_now=True)
     createdOn = models.DateTimeField(auto_now_add=True)
     
