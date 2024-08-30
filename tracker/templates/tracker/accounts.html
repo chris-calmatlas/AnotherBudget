@@ -9,14 +9,17 @@
         <button>Add</button>
     </form>
 
+    <div class="account callout"></div>
     <h2>Accounts</h2>
     <table class="accountTable">
-        {% for account in accounts %}
-        <tr>
-            <td>account.name</td>
-            <td>account.description</td>
-            <td>account.balance</td>
-        </tr>
-        {% endfor %}
+        <tbody class="accountTableBody">
+            {% for account in accounts %}
+            <tr>
+                <td>{{ account.name }}</td>
+                <td>{{ account.description }}</td>
+                <td>{{ account.currentBalance }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {% endblock %}

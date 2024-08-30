@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect
 import json
 from django.http import JsonResponse
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, MultipleObjectsReturned
+from django.core import serializers
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from tracker.utils import genericJsonError
 
 from tracker.models import Account
-from tracker.forms import newAccount
+from tracker.forms import newAccountForm
 
 @login_required
 def listAll(request): 
@@ -16,7 +17,7 @@ def listAll(request):
     
     context = {
         "accounts": accounts,
-        "accountForm": newAccount()
+        "accountForm": newAccountForm()
     }
 
     return render(request, "tracker/accounts.html", context)
@@ -36,24 +37,44 @@ def api(request, accountId):
         # Validate data
         try:
             data = json.loads(request.body)
-            accountForm = newAccount(data)
-            if accountForm.is_valid():
-                cleanedData = accountForm.cleaned_data
-                # Form is valid, build an object
-                account = Account(
-                    description = cleanedData["description"],
-                    amount = cleanedData["amount"],
-                    date = cleanedData["date"],
-                    owner = request.user
-                )
-                
-            else:
-                # There were errors
-                return JsonResponse(accountForm.errors.as_json(), safe=False)
         except:
+            # Something is wrong with the request.body
             return genericJsonError()
         
-        return genericJsonError()
+        accountForm = newAccountForm(data)
+        if accountForm.is_valid():
+            cleanedData = accountForm.cleaned_data
+            # Form is valid, build an object
+            account = Account(
+                name = cleanedData["name"],
+                startingBalance = cleanedData["startingBalance"],
+                description = cleanedData["description"],
+                owner = request.user
+            )
+        else:
+            # There were form validation errors
+            return JsonResponse(accountForm.errors.as_json(), safe=False)
+        
+        try:            
+            account.save()
+        except IntegrityError as e:
+            if("UNIQUE constraint failed" in f'{e}'):
+                return JsonResponse({
+                    "message": f'{cleanedData["name"]} already exists',
+                    "success": "false"
+                })
+            print(e)
+            return genericJsonError()
+        except Exception as e:
+            # db error
+            print(e)
+            return genericJsonError()
+
+        return JsonResponse({
+            "message": f'{cleanedData["name"]} added',
+            "success": "true", 
+            "record": serializers.serialize("json", [account])
+        })
 
     # Read the account
     if request.method == "GET":

@@ -8,15 +8,17 @@
         {{ transactionForm }}
         <button>Add</button>
     </form>
-
+    <div class="transaction callout"></div>
     <h2>Transactions</h2>
     <table class="transactionTable">
-        {% for transaction in transactions %}
-        <tr>
-            <td>transaction.date</td>
-            <td>transaction.entity</td>
-            <td>transaction.amount</td>
-        </tr>
-        {% endfor %}
+        <tbody class="transactionTableBody">
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.account.name }}</td>
+                <td>{{ transaction.amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {% endblock %}

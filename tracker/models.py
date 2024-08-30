@@ -8,8 +8,9 @@ class User(AbstractUser):
 
 class Account(models.Model):
     name = models.CharField(max_length=64)
-    owner = models.ForeignKey('User', null=True, on_delete=models.CASCADE)
-    staringBalance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    owner = models.ForeignKey('User', on_delete=models.CASCADE)
+    description = models.CharField(max_length=64, default="")
+    startingBalance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     currentBalance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     modifiedOn = models.DateTimeField(auto_now=True)
     createdOn = models.DateTimeField(auto_now_add=True)
@@ -19,9 +20,11 @@ class Account(models.Model):
             models.UniqueConstraint(fields=['name', 'owner'], name='unique_account_name'),
         ]
 
+    def __str__(self):
+        return f"{self.name} ({self.currentBalance})"
 class Entity(models.Model):
     name = models.CharField(max_length=64)
-    owner = models.ForeignKey('User', null=True, on_delete=models.CASCADE)
+    owner = models.ForeignKey('User', on_delete=models.CASCADE)
     modifiedOn = models.DateTimeField(auto_now=True)
     createdOn = models.DateTimeField(auto_now_add=True)
     
@@ -31,14 +34,14 @@ class Entity(models.Model):
         ]
 
 class Transaction(models.Model):
-    description = models.CharField(max_length=64)
-    account = models.ForeignKey('Account', null=True, on_delete=models.RESTRICT)
+    description = models.CharField(max_length=64, default="")
+    account = models.ForeignKey('Account', on_delete=models.RESTRICT)
     entity = models.ForeignKey('Entity', null=True, on_delete=models.SET_NULL)
     amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     isIncome = models.BooleanField(default='False')
     date = models.DateField(default=date.today)
 
-    owner = models.ForeignKey('User', null=True, on_delete=models.CASCADE)
+    owner = models.ForeignKey('User', on_delete=models.CASCADE)
     modifiedOn = models.DateTimeField(auto_now=True)
     createdOn = models.DateTimeField(auto_now_add=True)
     
