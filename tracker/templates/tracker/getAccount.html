@@ -1,0 +1,16 @@
+{% extends "tracker/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h2>{{ account }}</h2>
+    <div class="account callout"></div>
+    <ul>
+        <li>Name: {{ account.name }}</li>
+        <li>Description: {{ account.description }}</li>
+        <li>Starting Balance: {{ account.startingBalance }}</li>
+        <li>Current Balance: {{ account.curretBalance }}</li>
+        <li>Created on: {{ account.createdOn }}</li>
+        <li>Last modified: {{ account.modifiedOn }}</li>
+    </ul>
+
+{% endblock %}

@@ -23,6 +23,24 @@ def listAll(request):
     return render(request, "tracker/accounts.html", context)
 
 @login_required
+def getAccount(request, accountId):
+    try:
+        account = Account.objects.get(pk=accountId)
+    except ObjectDoesNotExist as e:
+        print(e)
+        raise PermissionDenied
+    
+    print(serializers.serialize("json", [account]))
+    context = {
+        "account": account
+    }
+
+    if account.owner == request.user:
+        return render(request, "tracker/getAccount.html", context)
+    else:
+        raise PermissionDenied
+
+@login_required
 def api(request, accountId):
     response = {
         "method": request.method
@@ -48,6 +66,7 @@ def api(request, accountId):
             account = Account(
                 name = cleanedData["name"],
                 startingBalance = cleanedData["startingBalance"],
+                currentBalance = cleanedData["startingBalance"],
                 description = cleanedData["description"],
                 owner = request.user
             )
@@ -78,7 +97,16 @@ def api(request, accountId):
 
     # Read the account
     if request.method == "GET":
-        return JsonResponse(response)
+        try:
+            account = Account.objects.get(pk=accountId)
+        except ObjectDoesNotExist as e:
+            print(e)
+            raise PermissionDenied
+        
+        if account.owner == request.user:
+            return JsonResponse(serializers.serialize("json", [account]))
+        else:
+            raise PermissionDenied
 
     # Update the account
     if request.method == "PUT":

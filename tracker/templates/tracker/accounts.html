@@ -14,11 +14,11 @@
     <table class="accountTable">
         <tbody class="accountTableBody">
             {% for account in accounts %}
-            <tr>
-                <td>{{ account.name }}</td>
-                <td>{{ account.description }}</td>
-                <td>{{ account.currentBalance }}</td>
-            </tr>
+                <tr>
+                    <td><a href="{% url 'getAccount' account.id %}">{{ account.name }}</a></td>
+                    <td>{{ account.description }}</td>
+                    <td>{{ account.currentBalance }}</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>

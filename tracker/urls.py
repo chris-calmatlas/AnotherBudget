@@ -28,6 +28,7 @@ urlpatterns = [
 
     path("view/transactions/", transactions.listAll, name="listAllTransactions"),
     path("view/accounts/", accounts.listAll, name="listAllAccounts"),
+    path("view/accounts/<str:accountId>/", accounts.getAccount, name="getAccount"),
 
     path("transactions/", transactions.api, {"transactionId":None}),
     path("transactions/<str:transactionId>/", transactions.api),
