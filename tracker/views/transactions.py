@@ -55,11 +55,6 @@ def api(request, transactionId):
                 isIncome = cleanedData["isIncome"]
             )
 
-            if cleanedData["isIncome"]:
-                account.currentBalance += cleanedData["amount"]
-            else:
-                account.currentBalance -= cleanedData["amount"]
-
         else:
             # There were form validation errors
             return JsonResponse(transactionForm.errors.as_json(), safe=False)
@@ -77,20 +72,9 @@ def api(request, transactionId):
             return genericJsonError()
         except Exception as e:
             # db error
+            # TODO: check if account was updated and rollback as neccessary
             print(e)
             return genericJsonError()
-        
-        # Update account balance
-        try:
-            account.save()
-        except Exception as e:
-            # something went wrong with the balance update. delete the transaction
-            print(e)
-            transaction.delete()
-            return JsonResponse({
-                "message": f'Account balance update failed',
-                "success": "false", 
-            })
 
         return JsonResponse({
             "message": f'Transaction added',

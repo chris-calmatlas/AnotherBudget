@@ -56,7 +56,29 @@ class Transaction(models.Model):
             return f"{self.amount} to ({self.account.name})"
         else:
             return f"{self.amount} from ({self.account.name})"
+        
+    def save(self, **kwargs):
+        # update account currentBalance
+        # TODO: error checking account updated correctly
+        if self.isIncome == True:
+            self.account.currentBalance += self.amount
+        else:
+            self.account.currentBalance -= self.amount
+        self.account.save()
 
+        super().save(**kwargs)
+
+    def delete(self, **kwargs):
+        # update account currentBalance
+        # TODO: error checking account updated correctly
+        if self.isIncome == True:
+            self.account.currentBalance -= self.amount
+        else:
+            self.account.currentBalance += self.amount
+        self.account.save()
+
+        super().delete(**kwargs)
+        
 class Reminder(Transaction):
     startDate = models.DateTimeField(null=True)
     endDate = models.DateTimeField(null=True)
