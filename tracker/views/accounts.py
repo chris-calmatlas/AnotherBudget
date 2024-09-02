@@ -30,7 +30,6 @@ def getAccount(request, accountId):
         print(e)
         raise PermissionDenied
     
-    print(serializers.serialize("json", [account]))
     context = {
         "account": account
     }

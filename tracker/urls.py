@@ -22,16 +22,16 @@ from .views import *
 urlpatterns = [
     path('', app.transactions, name='index'),
 
-    path("accounts/login/", auth.login_view, name="login"),
-    path("accounts/logout/", auth.logout_view, name="logout"),
-    path("accounts/register/", auth.register, name="register"),
+    path("auth/login/", auth.login_view, name="login"),
+    path("auth/logout/", auth.logout_view, name="logout"),
+    path("auth/register/", auth.register, name="register"),
 
-    path("view/transactions/", transactions.listAll, name="listAllTransactions"),
-    path("view/accounts/", accounts.listAll, name="listAllAccounts"),
-    path("view/accounts/<str:accountId>/", accounts.getAccount, name="getAccount"),
+    path("transactions/", transactions.listAll, name="listAllTransactions"),
+    path("accounts/", accounts.listAll, name="listAllAccounts"),
+    path("accounts/<str:accountId>/", accounts.getAccount, name="getAccount"),
 
-    path("transactions/", transactions.api, {"transactionId":None}),
-    path("transactions/<str:transactionId>/", transactions.api),
-    path("accounts/", accounts.api, {"accountId":None}),
-    path("accounts/<str:accountId>/", accounts.api),
+    path("api/transactions/", transactions.api, {"transactionId":None}),
+    path("api/transactions/<str:transactionId>/", transactions.api),
+    path("api/accounts/", accounts.api, {"accountId":None}),
+    path("api/accounts/<str:accountId>/", accounts.api),
 ]

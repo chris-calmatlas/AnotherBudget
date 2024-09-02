@@ -82,9 +82,8 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'tracker.User'
-# AUTHENTICATION_BACKENDS = [
-#     'tracker.backends.EmailBackend'
-# ]
+LOGIN_URL = '/auth/login'
+LOGIN_REDIRECT_URL = '/auth/profile/'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
