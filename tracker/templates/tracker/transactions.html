@@ -15,6 +15,13 @@
             {% for transaction in transactions %}
             <tr>
                 <td>{{ transaction.date }}</td>
+                <td>
+                {% if transaction.isIncome %}
+                    to
+                {% else %}
+                    from
+                {% endif %}
+                </td>
                 <td>{{ transaction.account.name }}</td>
                 <td>{{ transaction.amount }}</td>
             </tr>

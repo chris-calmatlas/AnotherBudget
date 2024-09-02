@@ -43,18 +43,28 @@ def api(request, transactionId):
         transactionForm = newTransactionForm(data)
         if transactionForm.is_valid():
             cleanedData = transactionForm.cleaned_data
+            account = cleanedData["account"]
+
             # Form is valid, build an object
             transaction = Transaction(
                 description = cleanedData["description"],
                 amount = cleanedData["amount"],
                 date = cleanedData["date"],
                 owner = request.user,
-                account = cleanedData["account"]
+                account = account, 
+                isIncome = cleanedData["isIncome"]
             )
+
+            if cleanedData["isIncome"]:
+                account.currentBalance += cleanedData["amount"]
+            else:
+                account.currentBalance -= cleanedData["amount"]
+
         else:
             # There were form validation errors
             return JsonResponse(transactionForm.errors.as_json(), safe=False)
 
+        # save the transaction
         try:
             transaction.save()
         except IntegrityError as e:
@@ -70,6 +80,18 @@ def api(request, transactionId):
             print(e)
             return genericJsonError()
         
+        # Update account balance
+        try:
+            account.save()
+        except Exception as e:
+            # something went wrong with the balance update. delete the transaction
+            print(e)
+            transaction.delete()
+            return JsonResponse({
+                "message": f'Account balance update failed',
+                "success": "false", 
+            })
+
         return JsonResponse({
             "message": f'Transaction added',
             "success": "true", 

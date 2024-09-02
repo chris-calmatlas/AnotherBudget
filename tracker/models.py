@@ -22,6 +22,7 @@ class Account(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.currentBalance})"
+    
 class Entity(models.Model):
     name = models.CharField(max_length=64)
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -35,7 +36,7 @@ class Entity(models.Model):
 
 class Transaction(models.Model):
     description = models.CharField(max_length=64, default="")
-    account = models.ForeignKey('Account', on_delete=models.RESTRICT)
+    account = models.ForeignKey('Account', on_delete=models.RESTRICT, related_name="transactions")
     entity = models.ForeignKey('Entity', null=True, on_delete=models.SET_NULL)
     amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     isIncome = models.BooleanField(default='False')
@@ -49,6 +50,12 @@ class Transaction(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['createdOn', 'owner'], name='one_transactions_at_a_time'),
         ]
+    
+    def __str__(self):
+        if self.isIncome == True:
+            return f"{self.amount} to ({self.account.name})"
+        else:
+            return f"{self.amount} from ({self.account.name})"
 
 class Reminder(Transaction):
     startDate = models.DateTimeField(null=True)

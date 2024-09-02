@@ -42,6 +42,15 @@ class newTransactionForm(forms.Form):
         )
     )
 
+    isIncome=forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "transactionData",
+            }
+        )
+    )
+
 class newAccountForm(forms.Form):
     name=forms.CharField(
         widget=forms.TextInput(

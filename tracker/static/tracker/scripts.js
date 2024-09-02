@@ -25,11 +25,17 @@ function formHandling(event, formName){
     // Validate form data before the post
     const formData = {};
     document.querySelectorAll(`.${formName}Data`).forEach(data => {
+        // validate required fields before post
         if(data.required && !data.value){
             errorMessage.innerHTML = "Required";
             data.after(errorMessage.cloneNode(true));
         } else {
-            formData[data.name] = data.value;
+            // required fields filled in. Send data. Check for bool values
+            if(data.type === "checkbox"){
+                formData[data.name] = data.checked;
+            } else {
+                formData[data.name] = data.value;
+            }
         }
     })
     
@@ -55,8 +61,7 @@ function formHandling(event, formName){
                 // Do something with the results.
                 document.querySelector(`.${formName}.callout`).innerHTML = result.message
                 const tableBody = document.querySelector(`.${formName}TableBody`)
-                const newRow = document.createElement("tr")
-                newRow.innerHTML = buildRow(formName, JSON.parse(result.record)[0])
+                const newRow = buildRow(formName, JSON.parse(result.record)[0])
                 tableBody.prepend(newRow)
             }
         })
@@ -64,12 +69,22 @@ function formHandling(event, formName){
 }
 
 function buildRow(model, record){
+    const newRow = document.createElement("tr")
     switch (model) {
         case "transaction":
-            // Nothing
+            newRow.innerHTML = `
+                <td>${record.fields.date}</td>
+                <td>${record.fields.isIncome ? "to" : "From"}</td>
+                <td>${record.fields.account.name}</td>
+                <td>${record.fields.amount}</td>
+            `
         case "account":
-            return `
-                <td>${record.fields.name}</td>
+            newRow.innerHTML =  `
+                <td>
+                    <a href="${record.pk}">
+                        ${record.fields.name}
+                    </a>
+                </td>
                 <td>${record.fields.description}</td>
                 <td>${record.fields.startingBalance}</td>
             `
@@ -77,4 +92,5 @@ function buildRow(model, record){
             //do nothing
     }
 
+    return newRow;
 }
