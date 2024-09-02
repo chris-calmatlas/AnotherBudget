@@ -92,7 +92,36 @@ def api(request, transactionId):
 
     # Delete the transaction
     if request.method == "DELETE":
-        return JsonResponse(response)
+        print(f'transactionId: {transactionId}')
+        print(type(transactionId))
+        # Try to get transaction. Error if a single transaction is not matched
+        try:
+            transaction = Transaction.objects.get(pk=transactionId)
+        except Exception as e:
+            print(e)
+            raise PermissionDenied
+        
+        print("We got the transaction")
+        print("I still love amanda panada")
+        # Validate owner matches this user or error
+        if transaction.owner == request.user:
+            try:
+                transaction.delete()
+            except Exception as e:
+                print(e)
+                return JsonResponse({
+                    "message": f'Something went wrong',
+                    "success": "false"
+                })
+            
+            return JsonResponse({
+                "message": f'Transaction Deleted',
+                "success": "true",
+                "record": serializers.serialize("json", [transaction])
+            })
+        else:
+            print("transction owner doesn't match current user")
+            raise PermissionDenied
     
     return genericJsonError()
     

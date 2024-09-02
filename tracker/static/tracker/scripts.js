@@ -13,6 +13,16 @@ document.addEventListener("DOMContentLoaded", () => {
             // We expect some items to not be found
         }
     })
+
+    try{
+        document.querySelectorAll(".transactionDelete").forEach(element => {
+            element.addEventListener("click", () => {
+                return deleteTransaction(element.dataset.transactionid);
+            })
+        })
+    } catch {
+        // We expect this to be empty sometimes
+    }
 })
 
 function formHandling(event, formName){
@@ -93,4 +103,26 @@ function buildRow(model, record){
     }
 
     return newRow;
+}
+
+function deleteTransaction(transactionId){
+    const csrfToken = document.querySelector(`.transactionTableBody input[name="csrfmiddlewaretoken"]`).value
+    // Delete from server
+    fetch(`/transactions/${transactionId}/`, {
+        headers: {
+            "X-CSRFToken": csrfToken,
+            "Content-Type": "application/json"
+        },
+        method: "DELETE",
+    })
+    .then(response => response.json())
+    .then(result => {
+        // return unhandled errors a single console log
+        if(result.error){
+            console.log(result.error)
+        } else {
+            // Do something with the results.
+            console.log(result)
+        }
+    })
 }

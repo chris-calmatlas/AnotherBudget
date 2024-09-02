@@ -12,6 +12,7 @@
     <h2>Transactions</h2>
     <table class="transactionTable">
         <tbody class="transactionTableBody">
+            {% csrf_token %}
             {% for transaction in transactions %}
             <tr>
                 <td>{{ transaction.date }}</td>
@@ -24,6 +25,7 @@
                 </td>
                 <td>{{ transaction.account.name }}</td>
                 <td>{{ transaction.amount }}</td>
+                <td><button class="transactionDelete" data-transactionId="{{ transaction.id }}">Delete</button></td>
             </tr>
             {% endfor %}
         </tbody>
