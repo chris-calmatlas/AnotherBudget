@@ -101,8 +101,6 @@ def api(request, transactionId):
             print(e)
             raise PermissionDenied
         
-        print("We got the transaction")
-        print("I still love amanda panada")
         # Validate owner matches this user or error
         if transaction.owner == request.user:
             try:

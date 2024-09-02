@@ -68,41 +68,11 @@ function formHandling(event, formName){
             if(result.error){
                 console.log(result.error)
             } else {
-                // Do something with the results.
-                document.querySelector(`.${formName}.callout`).innerHTML = result.message
-                const tableBody = document.querySelector(`.${formName}TableBody`)
-                const newRow = buildRow(formName, JSON.parse(result.record)[0])
-                tableBody.prepend(newRow)
+                // refresh the page
+                document.location.reload()
             }
         })
     }
-}
-
-function buildRow(model, record){
-    const newRow = document.createElement("tr")
-    switch (model) {
-        case "transaction":
-            newRow.innerHTML = `
-                <td>${record.fields.date}</td>
-                <td>${record.fields.isIncome ? "to" : "From"}</td>
-                <td>${record.fields.account.name}</td>
-                <td>${record.fields.amount}</td>
-            `
-        case "account":
-            newRow.innerHTML =  `
-                <td>
-                    <a href="${record.pk}">
-                        ${record.fields.name}
-                    </a>
-                </td>
-                <td>${record.fields.description}</td>
-                <td>${record.fields.startingBalance}</td>
-            `
-        default:
-            //do nothing
-    }
-
-    return newRow;
 }
 
 function deleteTransaction(transactionId){
@@ -121,8 +91,8 @@ function deleteTransaction(transactionId){
         if(result.error){
             console.log(result.error)
         } else {
-            // Do something with the results.
-            console.log(result)
+            // refresh the page
+            document.location.reload()
         }
     })
 }
