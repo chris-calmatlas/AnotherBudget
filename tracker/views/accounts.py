@@ -42,7 +42,7 @@ def list(request):
             account = Account(
                 name = cleanedData["name"],
                 startingBalance = cleanedData["startingBalance"],
-                currentBalance = cleanedData["startingBalance"],
+                endingBalance = cleanedData["startingBalance"],
                 description = cleanedData["description"],
                 owner = request.user
             )
@@ -115,7 +115,7 @@ def api(request, accountId):
             account = Account(
                 name = cleanedData["name"],
                 startingBalance = cleanedData["startingBalance"],
-                currentBalance = cleanedData["startingBalance"],
+                endingBalance = cleanedData["startingBalance"],
                 description = cleanedData["description"],
                 owner = request.user
             )

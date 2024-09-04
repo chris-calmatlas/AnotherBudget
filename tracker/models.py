@@ -11,7 +11,7 @@ class Account(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
     description = models.CharField(max_length=64, default="")
     startingBalance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    currentBalance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    endingBalance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     modifiedOn = models.DateTimeField(auto_now=True)
     createdOn = models.DateTimeField(auto_now_add=True)
     
@@ -21,7 +21,7 @@ class Account(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.name} ({self.currentBalance})"
+        return f"{self.name} ({self.endingBalance})"
     
 class Entity(models.Model):
     name = models.CharField(max_length=64)
@@ -58,23 +58,23 @@ class Transaction(models.Model):
             return f"{self.amount} from ({self.account.name})"
         
     def save(self, **kwargs):
-        # update account currentBalance
+        # update account endingBalance
         # TODO: error checking account updated correctly
         if self.isIncome == True:
-            self.account.currentBalance += self.amount
+            self.account.endingBalance += self.amount
         else:
-            self.account.currentBalance -= self.amount
+            self.account.endingBalance -= self.amount
         self.account.save()
 
         super().save(**kwargs)
 
     def delete(self, **kwargs):
-        # update account currentBalance
+        # update account endingBalance
         # TODO: error checking account updated correctly
         if self.isIncome == True:
-            self.account.currentBalance -= self.amount
+            self.account.endingBalance -= self.amount
         else:
-            self.account.currentBalance += self.amount
+            self.account.endingBalance += self.amount
         self.account.save()
 
         super().delete(**kwargs)

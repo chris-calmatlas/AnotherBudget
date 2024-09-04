@@ -6,17 +6,19 @@ from django.core import serializers
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
-from tracker.models import Transaction
+from tracker.models import Transaction, Account
 from tracker.forms import newTransactionForm
 
 @login_required
 def list(request): 
     # Get this users' transaction
     transactions = Transaction.objects.filter(owner=request.user)
+    accounts = Account.objects.filter(owner=request.user)
     
     context = {
         "transactions": transactions,
-        "transactionForm": newTransactionForm()
+        "transactionForm": newTransactionForm(),
+        "accounts": accounts
     }
 
     return render(request, "tracker/transactions.html", context)
@@ -92,8 +94,6 @@ def api(request, transactionId):
 
     # Delete the transaction
     if request.method == "DELETE":
-        print(f'transactionId: {transactionId}')
-        print(type(transactionId))
         # Try to get transaction. Error if a single transaction is not matched
         try:
             transaction = Transaction.objects.get(pk=transactionId)
