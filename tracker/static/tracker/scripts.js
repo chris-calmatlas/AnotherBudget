@@ -54,7 +54,7 @@ function formHandling(event, formName){
         const csrfToken = document.querySelector(`.${formName}Form input[name="csrfmiddlewaretoken"]`).value
         
         // Post to server
-        fetch(`/${formName}s/`, {
+        fetch(`/api/${formName}s/`, {
             headers: {
                 "X-CSRFToken": csrfToken,
                 "Content-Type": "application/json"
@@ -78,7 +78,7 @@ function formHandling(event, formName){
 function deleteTransaction(transactionId){
     const csrfToken = document.querySelector(`.transactionTableBody input[name="csrfmiddlewaretoken"]`).value
     // Delete from server
-    fetch(`/transactions/${transactionId}/`, {
+    fetch(`/api/transactions/${transactionId}/`, {
         headers: {
             "X-CSRFToken": csrfToken,
             "Content-Type": "application/json"

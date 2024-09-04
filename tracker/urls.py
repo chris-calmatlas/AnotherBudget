@@ -26,8 +26,8 @@ urlpatterns = [
     path("auth/logout/", auth.logout_view, name="logout"),
     path("auth/register/", auth.register, name="register"),
 
-    path("transactions/", transactions.listAll, name="listAllTransactions"),
-    path("accounts/", accounts.listAll, name="listAllAccounts"),
+    path("transactions/", transactions.list, name="listAllTransactions"),
+    path("accounts/", accounts.list, name="listAllAccounts"),
     path("accounts/<str:accountId>/", accounts.getAccount, name="getAccount"),
 
     path("api/transactions/", transactions.api, {"transactionId":None}),

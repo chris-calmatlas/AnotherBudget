@@ -10,7 +10,7 @@ from tracker.models import Transaction
 from tracker.forms import newTransactionForm
 
 @login_required
-def listAll(request): 
+def list(request): 
     # Get this users' transaction
     transactions = Transaction.objects.filter(owner=request.user)
     

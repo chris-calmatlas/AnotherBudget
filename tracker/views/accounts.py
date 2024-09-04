@@ -11,33 +11,83 @@ from tracker.models import Account
 from tracker.forms import newAccountForm
 
 @login_required
-def listAll(request): 
-    # Get this users' account
-    accounts = Account.objects.filter(owner=request.user)
-    
-    context = {
-        "accounts": accounts,
-        "accountForm": newAccountForm()
-    }
+def list(request):
+    if request.method == "GET":
+        # Get this users' account
+        accounts = Account.objects.filter(owner=request.user)
+        
+        context = {
+            "accounts": accounts,
+            "accountForm": newAccountForm()
+        }
 
-    return render(request, "tracker/accounts.html", context)
+        return render(request, "tracker/accounts.html", context)
+    
+    if request.method == "POST":
+        # Validate data
+        try:
+            data = json.loads(request.body)
+        except Exception as e:
+            print("acounts validate data exception")
+            raise PermissionDenied
+        
+        accountForm = newAccountForm(data)
+        context = {
+            "accounts": accounts,
+            "accountForm": accountForm
+        }
+        if accountForm.is_valid():
+            cleanedData = accountForm.cleaned_data
+            # Form is valid, build an object
+            account = Account(
+                name = cleanedData["name"],
+                startingBalance = cleanedData["startingBalance"],
+                currentBalance = cleanedData["startingBalance"],
+                description = cleanedData["description"],
+                owner = request.user
+            )
+        else:
+            # There were form validation errors
+            return render(request, "tracker/accounts.html", context)
+        
+        try:            
+            account.save()
+        except IntegrityError as e:
+            if("UNIQUE constraint failed" in f'{e}'):
+                return JsonResponse({
+                    "message": f'{cleanedData["name"]} already exists',
+                    "success": "false"
+                })
+            print(e)
+            return genericJsonError()
+        except Exception as e:
+            # db error
+            print(e)
+            return genericJsonError()
+
+        return JsonResponse({
+            "message": f'{cleanedData["name"]} added',
+            "success": "true", 
+            "record": serializers.serialize("json", [account])
+        })
 
 @login_required
 def getAccount(request, accountId):
-    try:
-        account = Account.objects.get(pk=accountId)
-    except ObjectDoesNotExist as e:
-        print(e)
-        raise PermissionDenied
-    
-    context = {
-        "account": account
-    }
+    if request.method == "GET":
+        try:
+            account = Account.objects.get(pk=accountId)
+        except ObjectDoesNotExist as e:
+            print(e)
+            raise PermissionDenied
+        
+        context = {
+            "account": account
+        }
 
-    if account.owner == request.user:
-        return render(request, "tracker/getAccount.html", context)
-    else:
-        raise PermissionDenied
+        if account.owner == request.user:
+            return render(request, "tracker/getAccount.html", context)
+        else:
+            raise PermissionDenied
 
 @login_required
 def api(request, accountId):
